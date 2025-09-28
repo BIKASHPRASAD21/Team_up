@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lost Item Report</title>
+  <link rel="stylesheet" href="LandS.css">
+</head>
+<body>
+
+<h1>Lost Item Report</h1>
+
+<div class="form-container">
+  <label>Item Name:</label>
+  <input type="text" id="itemName" placeholder="e.g., Black Purse">
+
+  <label>Description:</label>
+  <textarea id="itemDesc" placeholder="e.g.69rs inside"></textarea>
+
+  <label>Contact Info:</label>
+  <input type="text" id="contact" placeholder="e.g., 69696969 or email">
+
+  <label>Upload up to 3 Images:</label>
+  <input type="file" id="itemImages" accept="image/*" multiple>
+
+  <button onclick="reportLostItem()">Submit Report</button>
+</div>
+
+<h2>Reported Lost Items</h2>
+<div id="reports" class="report-list"></div>
+
+<script>
+function reportLostItem() {
+  const name = document.getElementById('itemName').value;
+  const desc = document.getElementById('itemDesc').value;
+  const contact = document.getElementById('contact').value;
+  const imageInput = document.getElementById('itemImages');
+  const files = imageInput.files;
+
+  if (!name || !desc || !contact) {
+    alert("Please fill in all fields!");
+    return;
+  }
+
+  const reportDiv = document.createElement("div");
+  reportDiv.className = "report-card";
+  reportDiv.innerHTML = `
+    <strong>Item:</strong> ${name} <br>
+    <strong>Description:</strong> ${desc} <br>
+    <strong>Contact:</strong> ${contact} <br>
+    <strong>Images:</strong>
+    <div class="images-container"></div>
+  `;
+
+  const imagesContainer = reportDiv.querySelector(".images-container");
+
+  if (files.length > 0) {
+    for (let i = 0; i < Math.min(files.length, 3); i++) { // Limit to 3 images
+      const reader = new FileReader(); // Create a FileReader to read the image file
+      reader.onload = function(e) { //
+        const img = document.createElement('img');
+        img.src = e.target.result;// Set the image source to the file data
+        img.alt = files[i].name;
+        imagesContainer.appendChild(img);// Append the image to the container
+      };
+      reader.readAsDataURL(files[i]);// Read the file as a data URL
+    }
+  } else {
+    imagesContainer.innerHTML = "No images uploaded";
+  }
+
+  document.getElementById("reports").appendChild(reportDiv);
+
+ 
+  document.getElementById('itemName').value = "";
+  document.getElementById('itemDesc').value = "";
+  document.getElementById('contact').value = "";
+  document.getElementById('itemImages').value = "";
+
+  
+  alert("Report submitted successfully!");
+}
+</script>
+
+</body>
+</html>
